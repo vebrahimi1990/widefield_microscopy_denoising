@@ -31,7 +31,7 @@ python evaluate.py
 ```
 
 # Results
-![plot](https://github.com/vebrahimi1990/UNet_RCAN_Denoising/blob/master/image%20files/Results.png)
+![plot](https://github.com/vebrahimi1990/widefield_microscopy_denoising/blob/master/image_files/Results.png)
 
 # Contact
 Should you have any question, please contact vebrahimi1369@gmail.com. 
