@@ -1,6 +1,6 @@
 # # Widefield_microscopy_denoising
 
-This repository contains three different CNNs for denoising widefield fluorescence microscopy images. The networks are built in Tensorflow 2.7.0 framework.
+This repository contains three different CNNs, UNet, RCAN, and UNet_RCAN, for denoising widefield fluorescence microscopy images. The networks are built in Tensorflow 2.7.0 framework.
 
 # Dependencies
 ```
@@ -15,7 +15,7 @@ Notebooks are in the ```notebooks``` folder.
 git clone https://github.com/vebrahimi1990/widefield_microscopy_denoising.git
 ```
 
-For training, add the directory to your training dataset and a directory to save the model to the configuration file ```(config.py)```.
+For training, specify the type of the model and add the directory to your training dataset and a directory to save the model to the configuration file ```(config.py)```.
 
 ```
 python train.py
@@ -28,10 +28,6 @@ For evaluation, add the directory to your test dataset and a directory to the sa
 ```
 python evaluate.py
 ```
-
-
-# Architecture
-![plot](https://github.com/vebrahimi1990/UNet_RCAN_Denoising/blob/master/image%20files/Architecture.png)
 
 # Results
 ![plot](https://github.com/vebrahimi1990/UNet_RCAN_Denoising/blob/master/image%20files/Results.png)
