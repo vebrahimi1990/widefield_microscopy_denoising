@@ -1,6 +1,7 @@
 # # Widefield_microscopy_denoising
 
-This repository contains three different CNNs, UNet, RCAN, and UNet_RCAN, for denoising widefield fluorescence microscopy images. The networks are built in Tensorflow 2.7.0 framework.
+This repository contains three different CNNs, UNet, RCAN, and UNet_RCAN, for denoising widefield fluorescence microscopy images. Each network architecture can be trained for a two- or three-dimensional image stack.  
+The networks are built in Tensorflow 2.7.0 framework.
 
 # Dependencies
 ```
