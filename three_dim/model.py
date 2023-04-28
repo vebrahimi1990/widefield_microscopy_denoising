@@ -1,5 +1,5 @@
 from keras.activations import sigmoid
-from keras.layers import Dropout, LeakyReLU, UpSampling3D
+from keras.layers import Dropout, LeakyReLU, UpSampling3D, BatchNormalization
 from keras.layers.convolutional import Conv3D
 from keras.layers.merge import concatenate, add, multiply
 from keras.layers.pooling import MaxPooling3D, GlobalAveragePooling3D
@@ -86,10 +86,12 @@ def UNet_RCAN(inputs, model_config):
         x = Dropout(dropout)(x)
 
     x = Conv3D(filters=1, kernel_size=1, padding="same")(x)
+    x = add([x, inputs])
     y = concatenate([x, inputs])
 
     y = make_RCAN(inputs=y, filters=filters[0], filters_cab=filters_cab, num_RG=num_RG, num_RCAB=num_cab,
                   kernel=kernel_shape, dropout=dropout)
+    y = add([y, inputs])
     model = Model(inputs=[inputs], outputs={'UNet': x, 'UNet_RCAN': y})
     return model
 
@@ -137,4 +139,35 @@ def RCAN(inputs, model_config):
     y = make_RCAN(inputs=inputs, filters=filters[0], filters_cab=filters_cab, num_RG=num_RG, num_RCAB=num_cab,
                   kernel=kernel_shape, dropout=dropout)
     model = Model(inputs=[inputs], outputs={'UNet_RCAN': y})
+    return model
+
+
+def conv_block_autoencoder(inputs, filters, kernel):
+    x = Conv3D(filters=filters, kernel_size=kernel, padding="same")(inputs)
+    x = LeakyReLU()(x)
+    x = BatchNormalization()(x)
+    x = Conv3D(filters=filters, kernel_size=kernel, padding="same")(x)
+    x = LeakyReLU()(x)
+    x = BatchNormalization()(x)
+    return x
+
+
+def UNet_autoencoder(inputs, model_config):
+    filters = sorted(model_config['filters'])
+    kernel_shape = model_config['kernel']
+    x = inputs
+    for i, f in enumerate(filters):
+        x = conv_block(x, f, kernel_shape)
+        x = MaxPooling3D(2)(x)
+
+    x = conv_block(x, 2 * filters[-1], kernel_shape)
+    x = conv_block(x, 2 * filters[-1], kernel_shape)
+    filters.reverse()
+
+    for i, f in enumerate(filters):
+        x = UpSampling3D(size=2, data_format='channels_last')(x)
+        x = conv_block(x, f, kernel_shape)
+
+    x = Conv3D(filters=1, kernel_size=1, padding="same")(x)
+    model = Model(inputs=[inputs], outputs={'UNet': x})
     return model
